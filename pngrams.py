@@ -215,10 +215,10 @@ def main():
 	test = getTrials("melville-moby_dick/test")
 
 	print "starting training for classification.."
-	classSession = doTraining(pnGraph, train)
+	classSession = doTraining(pnGraph, train, test)
 
 	print "starting training for auto-encoder.."
-	encodeSession = doTraining(aeGraph, train, epochs=1)
+	encodeSession = doTraining(aeGraph, train, test, epochs=1)
 
 	print "testing classification network.."
 	doTesting(pnGraph, test, classSession)
