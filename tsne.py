@@ -37,8 +37,8 @@ with tf.Session() as session:
 			filename,
 			xy=X_reduced[i],
 			fontsize=6,
-			facecolor="green" if filename.startswith("en") else "red"
+			color="green" if filename.startswith("en") else "red"
 		)
 
 	fig.savefig("clusters.png")
-	# plt.show()
+	plt.show()
