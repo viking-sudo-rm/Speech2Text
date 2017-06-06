@@ -162,7 +162,7 @@ def getTrials(dirname):
 
 	return output
 
-def doTraining(graph, train, epochs=10, batchSize=100, session=tf.Session()):
+def doTraining(graph, train, dev, epochs=10, batchSize=100, session=tf.Session()):
 
 	session.run(tf.global_variables_initializer())
 	saver = tf.train.Saver()
@@ -176,6 +176,7 @@ def doTraining(graph, train, epochs=10, batchSize=100, session=tf.Session()):
 			loss += graph.batchTrain(session, x, y)
 		print "epoch {} loss: {:.5f}".format(i, loss / len(train))
 		saver.save(session, "melville-moby_dick/model/{}-{}.ckpt".format(graph.getName(), len(train)))
+		doTesting(graph, dev, session)
 
 	return session
 
@@ -192,6 +193,14 @@ def getEmbeddings(graph, test, session):
 	for _, _, x, _ in test:
 		embeddings.append(np.squeeze(session.run(graph.h, feed_dict={graph.x: [x]})))
 	return embeddings
+
+def embed(test):
+	with tf.Session() as session:
+		graph = AEGraph()
+		embeddings = getEmbeddings(graph, test, session)
+		for i, filename, _, _ in test:
+			pickle.dump(embeddings[i], open("melville-moby_dick/pkl-small" + filename, "w"))
+			if i % 100 == 0: print "{} / {} embeddings saved".format(i, len(files))
 
 def main():
 
